@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, RTE, Select } from "..";
 import appwriteService from "../../appwrite/config";
@@ -17,7 +17,14 @@ export default function PostForm({ post }) {
 
     const navigate = useNavigate();
     const userData = useSelector((state) => state.auth.userData);
-    console.log(userData)
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (userData !== undefined && userData !== null) {
+            console.log(userData);
+            setLoading(false);
+        }
+    }, [userData]);
 
     const submit = async (data) => {
         if (post) {
@@ -60,7 +67,7 @@ export default function PostForm({ post }) {
         return "";
     }, []);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const subscription = watch((value, { name }) => {
             if (name === "title") {
                 setValue("slug", slugTransform(value.title), { shouldValidate: true });
@@ -69,6 +76,10 @@ export default function PostForm({ post }) {
 
         return () => subscription.unsubscribe();
     }, [watch, slugTransform, setValue]);
+
+    if (loading) {
+        return <div>Loading...</div>; // Display a loading message or spinner
+    }
 
     return (
         <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">

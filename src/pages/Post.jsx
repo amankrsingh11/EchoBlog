@@ -7,20 +7,37 @@ import { useSelector } from "react-redux";
 
 export default function Post() {
     const [post, setPost] = useState(null);
+    const [loading, setLoading] = useState(true); 
     const { slug } = useParams();
     const navigate = useNavigate();
 
     const userData = useSelector((state) => state.auth.userData);
-
-    const isAuthor = post && userData ? post.userId === userData.$id : false;
+    const isAuthor = post && userData ? post.userId === userData?.$id : false;
 
     useEffect(() => {
+        let isMounted = true; 
         if (slug) {
             appwriteService.getPost(slug).then((post) => {
-                if (post) setPost(post);
-                else navigate("/");
+                if (isMounted) {
+                    if (post) {
+                        setPost(post);
+                    } else {
+                        navigate("/");
+                    }
+                    setLoading(false);
+                }
+            }).catch(() => {
+                if (isMounted) {
+                    navigate("/");
+                }
             });
-        } else navigate("/");
+        } else {
+            navigate("/");
+        }
+
+        return () => {
+            isMounted = false;
+        };
     }, [slug, navigate]);
 
     const deletePost = () => {
@@ -32,6 +49,10 @@ export default function Post() {
         });
     };
 
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
     return post ? (
         <div className="py-8">
             <Container>
@@ -41,7 +62,6 @@ export default function Post() {
                         alt={post.title}
                         className="rounded-xl"
                     />
-
                     {isAuthor && (
                         <div className="absolute right-6 top-6">
                             <Link to={`/edit-post/${post.$id}`}>
@@ -60,7 +80,7 @@ export default function Post() {
                 </div>
                 <div className="browser-css">
                     {parse(post.content)}
-                    </div>
+                </div>
             </Container>
         </div>
     ) : null;

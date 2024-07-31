@@ -13,6 +13,9 @@ function Footer() {
                                 <Logo width="100px" />
                             </div>
                             <div>
+                                <h3 className="text-white-600 mb-5">
+                                    Developer : Aman Kumar Singh
+                                </h3>
                                 <p className="text-sm text-white-600">
                                     &copy; Copyright 2024. All Rights Reserved by EchoBlog.
                                 </p>

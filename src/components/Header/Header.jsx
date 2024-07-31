@@ -49,7 +49,7 @@ function Header(){
                         item.active? (
                             <li key={item.name}>
                                 <button onClick={()=>navigate(item.slug)}
-                                className='bg-white text-black mx-3 inline-block px-6 py-3 duration-200 hover:bg-blue-100 rounded-full'>
+                                className='bg-white text-black mx-3 mt-3 inline-block px-6 py-3 duration-200 hover:bg-blue-100 rounded-full'>
                                 {item.name}
                                 </button>
                             </li>
